@@ -75,6 +75,13 @@ function chatStripe (isAI,value,uniqueId){
     setinput_txt((prev) => ({ ...prev, [e.target.id]: e.target.value }))
   }
 
+
+  const handleKeyPress = (e)=>{
+    if(e.key === "Enter"){
+      handleSubmit(e)
+    }
+  }
+
   const handleSubmit = async (e)=>{
     e.preventDefault()
 
@@ -97,7 +104,7 @@ function chatStripe (isAI,value,uniqueId){
 
     try {
       
-  const response = await fetch('http://localhost:9000/', {
+  const response = await fetch('https://real-jade-snail-veil.cyclic.app/', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -137,6 +144,7 @@ function chatStripe (isAI,value,uniqueId){
           rows="1"
           cols="1"
           onChange={handleChange}
+          onKeyPress={handleKeyPress}
           placeholder="Ask Something.."
         ></textarea>
         <button type="submit" onClick={handleSubmit}><img src="assets/send.svg" /></button>
