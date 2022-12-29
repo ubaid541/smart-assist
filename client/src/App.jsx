@@ -61,7 +61,7 @@ function chatStripe (isAI,value,uniqueId){
             alt=${isAI ? 'bot' : 'user'}
           />
         </div>
-        <div class="message" id=${uniqueId}>
+        <div class="message ${isAI && 'bot-msg'}" id=${uniqueId}>
           ${value}
         </div>
       </div>
@@ -72,7 +72,8 @@ function chatStripe (isAI,value,uniqueId){
 
 
   const handleChange = (e)=>{
-    setinput_txt((prev) => ({ ...prev, [e.target.id]: e.target.value }))
+    // setinput_txt((prev) => ({ ...prev, [e.target.id]: e.target.value }))
+    setinput_txt(e.target.value)
   }
 
 
@@ -85,16 +86,32 @@ function chatStripe (isAI,value,uniqueId){
   const handleSubmit = async (e)=>{
     e.preventDefault()
 
-    if(txtarea.value === " "){
+    if(!input_txt){
       alert("Kindly enter something.")
       return;
     }
     
-    chatContainer.innerHTML += chatStripe(false,input_txt.txtarea)
+    chatContainer.innerHTML += chatStripe(false,input_txt)
 
      // bot's chatstripe
   const uniqueId = generateUniqueId()
   chatContainer.innerHTML += chatStripe(true, " ", uniqueId)
+
+  
+  // to focus scroll to the bottom 
+   chatContainer.scrollTop = chatContainer.scrollHeight;
+
+   // Set up an interval to continually scroll down
+   const scroll_interval = setInterval(() => {
+   // Check if the scroll position is near the bottom of the container
+   const isNearBottom = chatContainer.scrollHeight - chatContainer.scrollTop <= chatContainer.clientHeight + 50;
+
+   // If the scroll position is near the bottom, increase the scroll position by 10 pixels
+   if (isNearBottom) {
+     chatContainer.scrollTop += 10;
+   }
+  }, 100);
+
 
     // specific message div 
     const messageDiv = document.getElementById(uniqueId)
@@ -110,7 +127,7 @@ function chatStripe (isAI,value,uniqueId){
         'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-        prompt: input_txt.txtarea
+        prompt: input_txt
     })
 })
 
@@ -121,7 +138,12 @@ function chatStripe (isAI,value,uniqueId){
 
       const parsedData = data.bot.trim() // trims any trailing spaces/'\n' 
 
+      
+      setinput_txt("")
+      console.log(input_txt);
+
       typeText(messageDiv, parsedData)
+      clearInterval(scroll_interval)
 
     } catch (error) {
       clearInterval(loadInterval)
@@ -136,13 +158,13 @@ function chatStripe (isAI,value,uniqueId){
 
   return (
  <>
-      <div id="chat_container"></div>
+      <div id="chat_container" ></div>
       <form>
         <textarea
           id="txtarea"
-          name="txtarea"
           rows="1"
           cols="1"
+          value={input_txt}
           onChange={handleChange}
           onKeyPress={handleKeyPress}
           placeholder="Ask Something.."

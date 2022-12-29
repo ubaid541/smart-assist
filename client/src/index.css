@@ -12,8 +12,8 @@ body {
 }
 
 #root{
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 94vh;
 }
 
 #app {
@@ -92,6 +92,7 @@ body {
 
 .message {
   flex: 1;
+  margin-top: -15px;
 
   color: #dcdcdc;
   font-size: 20px;
@@ -109,6 +110,10 @@ body {
 
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+.bot-msg{
+  margin-top: 0px;
 }
 
 /* hides scrollbar */
